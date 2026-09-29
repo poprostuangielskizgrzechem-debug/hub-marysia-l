@@ -2550,23 +2550,41 @@ video {
         <!-- === HUB MODULE - END (writing/speaking view) === -->
         <!-- === HUB MODULE - START (exercises view) === -->
         <style>
-            .hub-ex-item { margin: 0 0 12px; line-height: 2.1; }
+            /* Karty cwiczen - wzor: osobne pliki z testami (future-forms.html) */
+            .hub-ex-card { background: #fff; border: 1px solid var(--hub-line); border-radius: 16px; padding: 18px 20px 16px;
+                margin: 0 0 18px; box-shadow: 0 6px 20px rgba(22,24,29,.05); }
+            .hub-ex-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; cursor: pointer; list-style: none; }
+            .hub-ex-head::-webkit-details-marker { display: none; }
+            .hub-ex-title { font-family: 'Plus Jakarta Sans', Arial, sans-serif; font-size: 17px; font-weight: 800; color: var(--hub-ink); }
+            .hub-ex-title::before { content: '\25B8'; display: inline-block; margin-right: 8px; color: var(--hub-muted); transition: transform .15s; }
+            .hub-ex-card[open] .hub-ex-title::before { transform: rotate(90deg); }
+            .hub-ex-score { font-size: 13px; font-weight: 700; color: #1e5aae; background: #e9f0fa; padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
+            .hub-ex-instr { color: var(--hub-muted); font-size: 14px; line-height: 1.5; margin: 10px 0 12px; }
+            .hub-ex-item { padding: 11px 0; border-top: 1px solid var(--hub-line); line-height: 1.9; font-size: 15.5px; }
+            .hub-ex-item:first-of-type { border-top: none; }
             .hub-ex-text { margin: 0 0 12px; line-height: 2.3; font-size: 15.5px; }
-            .hub-ex-num { font-weight: 700; margin-right: 6px; }
+            .hub-ex-num { font-weight: 700; color: var(--hub-muted); margin-right: 6px; }
             .hub-ex-gapnum { font-weight: 700; margin: 0 3px 0 2px; }
-            .hub-ex-input { border: none; border-bottom: 2px solid #94a3b8; background: transparent; font: inherit; text-align: center; padding: 0 4px; outline: none; max-width: 100%; }
-            .hub-ex-input:focus { border-bottom-color: #2563eb; }
-            .hub-ex-input.is-ok { border-bottom-color: #16a34a; color: #15803d; }
-            .hub-ex-input.is-bad { border-bottom-color: #dc2626; color: #b91c1c; }
-            .hub-ex-key { color: #15803d; font-size: 0.85em; margin-left: 4px; }
-            .hub-ex-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 8px; }
-            .hub-ex-score { font-weight: 700; }
+            .hub-ex-hint { color: var(--hub-muted); font-size: 0.9em; }
+            .hub-ex-input { border: 1.5px solid #d6d9df; border-radius: 8px; background: #fff; color: var(--hub-ink); font: inherit;
+                padding: 2px 8px; margin: 0 3px; outline: none; max-width: 100%; box-sizing: border-box; }
+            .hub-ex-item .hub-ex-input { max-width: 12em; }
+            .hub-ex-input:focus { border-color: #1e5aae; }
+            .hub-ex-input.is-ok { border-color: #1f9254; background: #eafaf0; color: #15803d; }
+            .hub-ex-input.is-bad { border-color: #ee4352; background: #fdecec; color: #b91c1c; }
+            .hub-ex-key { color: #15803d; font-size: 0.85em; font-weight: 600; margin-left: 4px; }
+            .hub-ex-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; justify-content: flex-end; margin-top: 12px; }
+            .hub-ex-btn { font: inherit; font-size: 14px; font-weight: 600; border: none; border-radius: 8px; padding: 7px 14px; cursor: pointer;
+                background: #e9f0fa; color: #1e5aae; }
+            .hub-ex-btn:hover { background: #dcebfa; }
+            .hub-ex-btn-main { background: #1e5aae; color: #fff; }
+            .hub-ex-btn-main:hover { background: #1e5aae; opacity: .9; }
             .hub-ex-box { display: flex; flex-wrap: wrap; gap: 6px 14px; border: 1px solid var(--hub-line); border-radius: 10px;
                           padding: 10px 14px; margin: 0 0 14px; font-weight: 600; }
+            .hub-ex-box span { white-space: nowrap; padding: 3px 10px; border: 1px solid #cbd5e1; border-radius: 6px; background: #f8fafc; }
             .hub-ex-choice { display: inline-flex; flex-wrap: wrap; gap: 4px; vertical-align: middle; }
-            .hub-ex-opt { font: inherit; font-size: 14.5px; line-height: 1.35; padding: 2px 9px; border-radius: 8px; cursor: pointer;
-                          border: 1.5px solid #cbd5e1; background: #fff; color: var(--hub-ink); }
-            .hub-ex-opt:hover { border-color: #2563eb; }
+            .hub-ex-opt { font: inherit; font-size: 14.5px; line-height: 1.35; padding: 5px 12px; margin: 2px 0; border-radius: 8px; cursor: pointer; border: 1.5px solid #d6d9df; background: #fff; color: var(--hub-ink); }
+            .hub-ex-opt:hover { border-color: #1e5aae; }
             .hub-ex-opt.is-picked { border-color: #2563eb; background: #eff6ff; font-weight: 700; }
             .hub-ex-opt.is-ok { border-color: #16a34a; background: #f0fdf4; color: #15803d; }
             .hub-ex-opt.is-bad { border-color: #dc2626; background: #fef2f2; color: #b91c1c; text-decoration: line-through; }
@@ -2579,9 +2597,10 @@ video {
             .hub-ex-table .hub-ex-input { width: 100%; min-width: 90px; text-align: left; }
             .hub-ex-img { width: 1%; }
             .hub-ex-img svg { display: block; height: 40px; width: auto; max-width: 64px; box-shadow: 0 0 0 1px #cbd5e1; }
-            .hub-ex-self { margin: 0 0 16px; }
+            .hub-ex-self { padding: 12px 0; border-top: 1px solid var(--hub-line); }
+            .hub-ex-self:first-of-type { border-top: none; }
             .hub-ex-self-q { margin: 0 0 6px; line-height: 1.5; }
-            .hub-ex-selfinput { width: 100%; box-sizing: border-box; font: inherit; padding: 6px 10px; border: 1.5px solid #cbd5e1; border-radius: 8px; outline: none; background: #fff; color: var(--hub-ink); }
+            .hub-ex-selfinput { width: 100%; box-sizing: border-box; font: inherit; padding: 6px 10px; border: 1.5px solid #d6d9df; border-radius: 8px; outline: none; background: #fff; color: var(--hub-ink); }
             .hub-ex-selfinput:focus { border-color: #2563eb; }
             .hub-ex-model { margin-top: 6px; }
             .hub-ex-model summary { cursor: pointer; font-size: 14px; font-weight: 600; color: #2563eb; }
@@ -2987,6 +3006,126 @@ video {
                                     "sentenceWithGap": "The Polish school year always starts in [gap].",
                                     "firstLetterHint": "s"
                         }
+            ],
+            "Lekcja 2 (29.09)": [
+                        {
+                                    "word": "brain",
+                                    "translation": "mózg",
+                                    "definition": "the part inside your head that you think with",
+                                    "pos": "n",
+                                    "sentenceWithGap": "You think with your [gap].",
+                                    "firstLetterHint": "b"
+                        },
+                        {
+                                    "word": "rot",
+                                    "translation": "gnić",
+                                    "definition": "to slowly go bad and soft, like old fruit",
+                                    "pos": "v"
+                        },
+                        {
+                                    "word": "rotten",
+                                    "translation": "zgniły",
+                                    "definition": "old, bad and soft, so you can't eat it",
+                                    "pos": "adj",
+                                    "sentenceWithGap": "Don't eat that apple! It's old and [gap].",
+                                    "firstLetterHint": "r"
+                        },
+                        {
+                                    "word": "lemon",
+                                    "translation": "cytryna",
+                                    "definition": "a yellow fruit with a very sour taste",
+                                    "pos": "n",
+                                    "sentenceWithGap": "A [gap] is a yellow fruit and it is very sour.",
+                                    "firstLetterHint": "l"
+                        },
+                        {
+                                    "word": "vegetables",
+                                    "translation": "warzywa",
+                                    "definition": "plants like carrots and potatoes that we eat",
+                                    "pos": "n",
+                                    "sentenceWithGap": "Carrots, potatoes and onions are [gap].",
+                                    "firstLetterHint": "v"
+                        },
+                        {
+                                    "word": "handcraft",
+                                    "translation": "rękodzieło",
+                                    "definition": "making nice things with your hands, for example from paper or wool",
+                                    "pos": "n"
+                        },
+                        {
+                                    "word": "pumpkin",
+                                    "translation": "dynia",
+                                    "definition": "a big, round, orange vegetable, popular at Halloween",
+                                    "pos": "n",
+                                    "sentenceWithGap": "A [gap] is big, round and orange.",
+                                    "firstLetterHint": "p"
+                        },
+                        {
+                                    "word": "Are you good at decorating?",
+                                    "translation": "Czy jesteś dobra w dekorowaniu?",
+                                    "definition": "a question asking if someone can make things look nice",
+                                    "pos": "sent"
+                        },
+                        {
+                                    "word": "I'm good at handcraft",
+                                    "translation": "Jestem dobra w rękodziele.",
+                                    "definition": "saying you can make nice things with your hands",
+                                    "pos": "sent"
+                        },
+                        {
+                                    "word": "How old are you?",
+                                    "translation": "Ile masz lat?",
+                                    "definition": "a question asking about someone's age",
+                                    "pos": "sent"
+                        },
+                        {
+                                    "word": "school bag",
+                                    "translation": "plecak szkolny / tornister",
+                                    "definition": "a bag for your books and pencils for school",
+                                    "pos": "n"
+                        },
+                        {
+                                    "word": "table",
+                                    "translation": "stół",
+                                    "definition": "a piece of furniture with legs and a flat top, for eating or working",
+                                    "pos": "n",
+                                    "sentenceWithGap": "We eat dinner at the [gap] in the kitchen.",
+                                    "firstLetterHint": "t"
+                        },
+                        {
+                                    "word": "chair",
+                                    "translation": "krzesło",
+                                    "definition": "a seat for one person, with four legs and a back",
+                                    "pos": "n",
+                                    "sentenceWithGap": "I sit on a [gap] at my desk.",
+                                    "firstLetterHint": "c"
+                        },
+                        {
+                                    "word": "sofa",
+                                    "translation": "sofa / kanapa",
+                                    "definition": "a long, soft seat for two or three people",
+                                    "pos": "n"
+                        },
+                        {
+                                    "word": "cage",
+                                    "translation": "klatka",
+                                    "definition": "a box with metal bars for a pet like a bird or a hamster",
+                                    "pos": "n",
+                                    "sentenceWithGap": "My hamster lives in a [gap].",
+                                    "firstLetterHint": "c"
+                        },
+                        {
+                                    "word": "their cage",
+                                    "translation": "ich klatka",
+                                    "definition": "the cage that belongs to them",
+                                    "pos": "phr"
+                        },
+                        {
+                                    "word": "hamster",
+                                    "translation": "chomik",
+                                    "definition": "a small furry pet with a short tail",
+                                    "pos": "n"
+                        }
             ]
 };
 
@@ -2999,8 +3138,8 @@ video {
         "teacherWhatsApp": "48661138650",
         "storageKey": "hub_marysia-l_2026-09",
         "studentKey": "hub_marysia-l",
-        "stamp": "aktualizacja po lekcji 1, 22.09.2026",
-        "lastLessonPhrase": "lekcji 1",
+        "stamp": "aktualizacja po lekcji 2, 29.09.2026",
+        "lastLessonPhrase": "lekcji 2",
         "lessons": [
                 {
                         "label": "Lekcja 1",
@@ -3008,6 +3147,13 @@ video {
                         "categoryKey": "Lekcja 1 (22.09)",
                         "vocabCount": 36,
                         "topic": "Lekcja organizacyjna: odmiana czasownika \"to be\", przedstawianie się, dni tygodnia i pory roku."
+                },
+                {
+                        "label": "Lekcja 2",
+                        "dateLabel": "29.09.2026",
+                        "categoryKey": "Lekcja 2 (29.09)",
+                        "vocabCount": 17,
+                        "topic": "Przypomnienie czasownika \"być\" (to be), przymiotniki dzierżawcze (my, your, his, her...), fiszki z notatek i Unit 1."
                 }
         ],
         "grammar": [
@@ -3029,6 +3175,239 @@ video {
                         "explanation": "Czasownik \"być\" zmienia formę zależnie od osoby: am / is / are. W pytaniach czasownik przechodzi na początek zdania, a w przeczeniach dodajemy \"not\".",
                         "sections": [],
                         "links": []
+                },
+                {
+                        "lessonLabel": "Lekcja 2",
+                        "dateLabel": "29.09.2026",
+                        "topic": "Czasownik \"to be\" (być): am, is, are",
+                        "mistake": "",
+                        "correction": "",
+                        "items": [],
+                        "explanation": "Po polsku mówisz: jestem, jesteś, jest. Po angielsku są tylko trzy formy: am, is, are. Używasz ich, gdy mówisz, kim ktoś jest, ile ma lat, skąd jest, jaki jest i gdzie jest.",
+                        "sections": [
+                                {
+                                        "type": "table",
+                                        "tone": "blue",
+                                        "emoji": "🧩",
+                                        "title": "Odmiana przez osoby",
+                                        "head": [
+                                                "Osoba",
+                                                "Pełna forma",
+                                                "Krótka forma",
+                                                "Po polsku"
+                                        ],
+                                        "rows": [
+                                                [
+                                                        "I",
+                                                        "I **am**",
+                                                        "I'm",
+                                                        "ja jestem"
+                                                ],
+                                                [
+                                                        "you",
+                                                        "you **are**",
+                                                        "you're",
+                                                        "ty jesteś"
+                                                ],
+                                                [
+                                                        "he",
+                                                        "he **is**",
+                                                        "he's",
+                                                        "on jest"
+                                                ],
+                                                [
+                                                        "she",
+                                                        "she **is**",
+                                                        "she's",
+                                                        "ona jest"
+                                                ],
+                                                [
+                                                        "it",
+                                                        "it **is**",
+                                                        "it's",
+                                                        "ono / to jest"
+                                                ],
+                                                [
+                                                        "we",
+                                                        "we **are**",
+                                                        "we're",
+                                                        "my jesteśmy"
+                                                ],
+                                                [
+                                                        "you",
+                                                        "you **are**",
+                                                        "you're",
+                                                        "wy jesteście"
+                                                ],
+                                                [
+                                                        "they",
+                                                        "they **are**",
+                                                        "they're",
+                                                        "oni / one są"
+                                                ]
+                                        ]
+                                },
+                                {
+                                        "type": "card",
+                                        "tone": "green",
+                                        "emoji": "✅",
+                                        "title": "Kiedy używasz \"to be\"?",
+                                        "points": [
+                                                "Imię i kim jesteś",
+                                                "Wiek (po angielsku wiek się **jest**, a nie **ma**!)",
+                                                "Skąd jesteś",
+                                                "Jaki ktoś jest",
+                                                "Gdzie coś jest"
+                                        ],
+                                        "examples": [
+                                                "I**'m** Marysia.",
+                                                "I**'m** 10 years old.",
+                                                "We **are** from Poland.",
+                                                "My cat **is** funny.",
+                                                "The hamster **is** in the cage."
+                                        ]
+                                },
+                                {
+                                        "type": "card",
+                                        "tone": "red",
+                                        "emoji": "🚫",
+                                        "title": "Przeczenie: dodaj not",
+                                        "points": [
+                                                "am not, **isn't** (is not), **aren't** (are not)"
+                                        ],
+                                        "examples": [
+                                                "I**'m not** sad.",
+                                                "He **isn't** at school.",
+                                                "They **aren't** my friends."
+                                        ]
+                                },
+                                {
+                                        "type": "card",
+                                        "tone": "gold",
+                                        "emoji": "❓",
+                                        "title": "Pytanie: am / is / are idzie na początek",
+                                        "points": [
+                                                "You **are** ten. → **Are** you ten?"
+                                        ],
+                                        "examples": [
+                                                "**Are** you Polish? Yes, I am. / No, I'm not.",
+                                                "**Is** she your sister? Yes, she is.",
+                                                "How old **are** you?"
+                                        ]
+                                },
+                                {
+                                        "type": "tip",
+                                        "tone": "blue",
+                                        "emoji": "💡",
+                                        "title": "Łatwy sposób",
+                                        "text": "**I** ma swoje **am**.\n**He, she, it** (jedna osoba albo rzecz) → **is**.\nWszyscy inni (**you, we, they**) → **are**."
+                                }
+                        ],
+                        "links": [
+                                {
+                                        "label": "How To Teach The Verb To Be -- \"To Be\" Song",
+                                        "url": "https://www.youtube.com/watch?v=RRY4sUOgHVs",
+                                        "type": "youtube",
+                                        "questions": []
+                                }
+                        ]
+                },
+                {
+                        "lessonLabel": "Lekcja 2",
+                        "dateLabel": "29.09.2026",
+                        "topic": "Przymiotniki dzierżawcze: my, your, his, her, its, our, their",
+                        "mistake": "",
+                        "correction": "",
+                        "items": [],
+                        "explanation": "To małe słówka, które mówią, czyje coś jest: mój, twój, jego, jej. Stoją zawsze przed rzeczą, o której mówisz: my cat, her bag.",
+                        "sections": [
+                                {
+                                        "type": "table",
+                                        "tone": "blue",
+                                        "emoji": "🎒",
+                                        "title": "Kto? → Czyje?",
+                                        "head": [
+                                                "Osoba",
+                                                "Czyje?",
+                                                "Po polsku",
+                                                "Przykład"
+                                        ],
+                                        "rows": [
+                                                [
+                                                        "I",
+                                                        "**my**",
+                                                        "mój / moja / moje",
+                                                        "**my** school bag"
+                                                ],
+                                                [
+                                                        "you",
+                                                        "**your**",
+                                                        "twój / twoja / twoje",
+                                                        "**your** chair"
+                                                ],
+                                                [
+                                                        "he",
+                                                        "**his**",
+                                                        "jego",
+                                                        "**his** table"
+                                                ],
+                                                [
+                                                        "she",
+                                                        "**her**",
+                                                        "jej",
+                                                        "**her** sofa"
+                                                ],
+                                                [
+                                                        "it",
+                                                        "**its**",
+                                                        "jego / jej (zwierzę, rzecz)",
+                                                        "**its** cage"
+                                                ],
+                                                [
+                                                        "we",
+                                                        "**our**",
+                                                        "nasz / nasza / nasze",
+                                                        "**our** house"
+                                                ],
+                                                [
+                                                        "you",
+                                                        "**your**",
+                                                        "wasz / wasza / wasze",
+                                                        "**your** teacher"
+                                                ],
+                                                [
+                                                        "they",
+                                                        "**their**",
+                                                        "ich",
+                                                        "**their** cage"
+                                                ]
+                                        ]
+                                },
+                                {
+                                        "type": "card",
+                                        "tone": "green",
+                                        "emoji": "✅",
+                                        "title": "Kiedy tego używasz?",
+                                        "points": [
+                                                "Gdy mówisz, **czyje** coś jest.",
+                                                "Słówko się **nie zmienia**: my brother, my sister, my pets. Po polsku zmieniasz (mój, moja, moje), po angielsku nie."
+                                        ],
+                                        "examples": [
+                                                "This is **my** hamster. **Its** name is Bob.",
+                                                "Tom is **my** friend. **His** dog is big.",
+                                                "Anna is ten. **Her** bag is pink.",
+                                                "The hamsters are in **their** cage."
+                                        ]
+                                },
+                                {
+                                        "type": "tip",
+                                        "tone": "red",
+                                        "emoji": "⚠️",
+                                        "title": "Uwaga na his i her",
+                                        "text": "Patrz, **czyje** coś jest, a nie na tę rzecz.\nTom i jego siostra → **his** sister (bo Tom).\nAnna i jej brat → **her** brother (bo Anna)."
+                                }
+                        ],
+                        "links": []
                 }
         ],
         "homework": [],
@@ -3045,10 +3424,517 @@ video {
                         "word": "drawing",
                         "translation": "rysowanie",
                         "note": ""
+                },
+                {
+                        "lessonLabel": "Lekcja 2",
+                        "word": "vegetables",
+                        "translation": "warzywa",
+                        "note": "Trzy sylaby, nie cztery: WEDŻ-te-bylz."
+                },
+                {
+                        "lessonLabel": "Lekcja 2",
+                        "word": "table",
+                        "translation": "stół",
+                        "note": ""
+                },
+                {
+                        "lessonLabel": "Lekcja 2",
+                        "word": "chair",
+                        "translation": "krzesło",
+                        "note": ""
                 }
         ],
         "writingSpeaking": [],
-        "exercises": [],
+        "exercises": [
+                {
+                        "lessonLabel": "Lekcja 2",
+                        "dateLabel": "29.09.2026",
+                        "title": "1. Am, is czy are?",
+                        "instructions": "Kliknij poprawną formę czasownika \"to be\".",
+                        "layout": "list",
+                        "columns": [],
+                        "wordBox": [],
+                        "letters": false,
+                        "items": [
+                                {
+                                        "text": "I [gap] ten years old.",
+                                        "answers": [
+                                                "am"
+                                        ],
+                                        "choices": [
+                                                [
+                                                        "am",
+                                                        "is",
+                                                        "are"
+                                                ]
+                                        ]
+                                },
+                                {
+                                        "text": "My sister [gap] six.",
+                                        "answers": [
+                                                "is"
+                                        ],
+                                        "choices": [
+                                                [
+                                                        "am",
+                                                        "is",
+                                                        "are"
+                                                ]
+                                        ]
+                                },
+                                {
+                                        "text": "We [gap] from Poland.",
+                                        "answers": [
+                                                "are"
+                                        ],
+                                        "choices": [
+                                                [
+                                                        "am",
+                                                        "is",
+                                                        "are"
+                                                ]
+                                        ]
+                                },
+                                {
+                                        "text": "The pumpkin [gap] orange.",
+                                        "answers": [
+                                                "is"
+                                        ],
+                                        "choices": [
+                                                [
+                                                        "am",
+                                                        "is",
+                                                        "are"
+                                                ]
+                                        ]
+                                },
+                                {
+                                        "text": "You [gap] good at handcraft.",
+                                        "answers": [
+                                                "are"
+                                        ],
+                                        "choices": [
+                                                [
+                                                        "am",
+                                                        "is",
+                                                        "are"
+                                                ]
+                                        ]
+                                },
+                                {
+                                        "text": "The hamsters [gap] in the cage.",
+                                        "answers": [
+                                                "are"
+                                        ],
+                                        "choices": [
+                                                [
+                                                        "am",
+                                                        "is",
+                                                        "are"
+                                                ]
+                                        ]
+                                },
+                                {
+                                        "text": "Tom [gap] my friend.",
+                                        "answers": [
+                                                "is"
+                                        ],
+                                        "choices": [
+                                                [
+                                                        "am",
+                                                        "is",
+                                                        "are"
+                                                ]
+                                        ]
+                                },
+                                {
+                                        "text": "The lemons [gap] yellow.",
+                                        "answers": [
+                                                "are"
+                                        ],
+                                        "choices": [
+                                                [
+                                                        "am",
+                                                        "is",
+                                                        "are"
+                                                ]
+                                        ]
+                                }
+                        ]
+                },
+                {
+                        "lessonLabel": "Lekcja 2",
+                        "dateLabel": "29.09.2026",
+                        "title": "2. Przeczenia i pytania",
+                        "instructions": "Wpisz brakującą formę \"to be\". W zdaniach z ❌ zrób przeczenie (możesz napisać pełną albo krótką formę). W pytaniach zacznij od am / is / are.",
+                        "layout": "list",
+                        "columns": [],
+                        "wordBox": [],
+                        "letters": false,
+                        "items": [
+                                {
+                                        "text": "❌ I [gap] sad today.",
+                                        "answers": [
+                                                [
+                                                        "am not",
+                                                        "'m not"
+                                                ]
+                                        ]
+                                },
+                                {
+                                        "text": "❌ The apple [gap] rotten.",
+                                        "answers": [
+                                                [
+                                                        "is not",
+                                                        "isn't"
+                                                ]
+                                        ]
+                                },
+                                {
+                                        "text": "❌ We [gap] at school now.",
+                                        "answers": [
+                                                [
+                                                        "are not",
+                                                        "aren't"
+                                                ]
+                                        ]
+                                },
+                                {
+                                        "text": "❌ My dog [gap] big.",
+                                        "answers": [
+                                                [
+                                                        "is not",
+                                                        "isn't"
+                                                ]
+                                        ]
+                                },
+                                {
+                                        "text": "[gap] you Polish? Yes, I am.",
+                                        "answers": [
+                                                "are"
+                                        ]
+                                },
+                                {
+                                        "text": "[gap] she your sister? No, she isn't.",
+                                        "answers": [
+                                                "is"
+                                        ]
+                                },
+                                {
+                                        "text": "How old [gap] you?",
+                                        "answers": [
+                                                "are"
+                                        ]
+                                },
+                                {
+                                        "text": "[gap] they your pets? Yes, they are.",
+                                        "answers": [
+                                                "are"
+                                        ]
+                                }
+                        ]
+                },
+                {
+                        "lessonLabel": "Lekcja 2",
+                        "dateLabel": "29.09.2026",
+                        "title": "3. Czyje to jest?",
+                        "instructions": "Kliknij poprawne słówko.",
+                        "layout": "list",
+                        "columns": [],
+                        "wordBox": [],
+                        "letters": false,
+                        "items": [
+                                {
+                                        "text": "I have a cat. [gap] cat is black.",
+                                        "answers": [
+                                                "my"
+                                        ],
+                                        "choices": [
+                                                [
+                                                        "my",
+                                                        "your",
+                                                        "his"
+                                                ]
+                                        ]
+                                },
+                                {
+                                        "text": "Tom has a school bag. [gap] school bag is blue.",
+                                        "answers": [
+                                                "his"
+                                        ],
+                                        "choices": [
+                                                [
+                                                        "his",
+                                                        "her",
+                                                        "their"
+                                                ]
+                                        ]
+                                },
+                                {
+                                        "text": "Anna has a hamster. [gap] hamster is small.",
+                                        "answers": [
+                                                "her"
+                                        ],
+                                        "choices": [
+                                                [
+                                                        "his",
+                                                        "her",
+                                                        "its"
+                                                ]
+                                        ]
+                                },
+                                {
+                                        "text": "We have a sofa. [gap] sofa is green.",
+                                        "answers": [
+                                                "our"
+                                        ],
+                                        "choices": [
+                                                [
+                                                        "our",
+                                                        "their",
+                                                        "my"
+                                                ]
+                                        ]
+                                },
+                                {
+                                        "text": "My brothers have a rabbit. [gap] rabbit is white.",
+                                        "answers": [
+                                                "their"
+                                        ],
+                                        "choices": [
+                                                [
+                                                        "our",
+                                                        "his",
+                                                        "their"
+                                                ]
+                                        ]
+                                },
+                                {
+                                        "text": "The dog is in [gap] bed.",
+                                        "answers": [
+                                                "its"
+                                        ],
+                                        "choices": [
+                                                [
+                                                        "its",
+                                                        "their",
+                                                        "her"
+                                                ]
+                                        ]
+                                },
+                                {
+                                        "text": "Marysia, is this [gap] chair?",
+                                        "answers": [
+                                                "your"
+                                        ],
+                                        "choices": [
+                                                [
+                                                        "my",
+                                                        "your",
+                                                        "our"
+                                                ]
+                                        ]
+                                }
+                        ]
+                },
+                {
+                        "lessonLabel": "Lekcja 2",
+                        "dateLabel": "29.09.2026",
+                        "title": "4. Uzupełnij zdania",
+                        "instructions": "Wpisz słówko z ramki. Najpierw sprawdź, CZYJE coś jest.",
+                        "layout": "list",
+                        "columns": [],
+                        "wordBox": [
+                                "his",
+                                "our",
+                                "her",
+                                "their",
+                                "its",
+                                "my"
+                        ],
+                        "letters": false,
+                        "items": [
+                                {
+                                        "text": "I'm Kasia and this is [gap] mum.",
+                                        "answers": [
+                                                "my"
+                                        ]
+                                },
+                                {
+                                        "text": "Ola is ten. [gap] favourite fruit is a lemon.",
+                                        "answers": [
+                                                "her"
+                                        ]
+                                },
+                                {
+                                        "text": "Mark and Tim are brothers. [gap] room is big.",
+                                        "answers": [
+                                                "their"
+                                        ]
+                                },
+                                {
+                                        "text": "Mr Smith is a teacher. [gap] table is in the classroom.",
+                                        "answers": [
+                                                "his"
+                                        ]
+                                },
+                                {
+                                        "text": "The hamster is in [gap] cage.",
+                                        "answers": [
+                                                "its"
+                                        ]
+                                },
+                                {
+                                        "text": "We live in Nysa. [gap] house is small.",
+                                        "answers": [
+                                                "our"
+                                        ]
+                                }
+                        ]
+                },
+                {
+                        "lessonLabel": "Lekcja 2",
+                        "dateLabel": "29.09.2026",
+                        "title": "5. Tekst: Marysia i jej zwierzaki",
+                        "instructions": "Przeczytaj tekst i kliknij poprawne słówka.",
+                        "layout": "text",
+                        "columns": [],
+                        "wordBox": [],
+                        "letters": false,
+                        "items": [
+                                {
+                                        "text": "Hi! My name [gap] Marysia.",
+                                        "answers": [
+                                                "is"
+                                        ],
+                                        "choices": [
+                                                [
+                                                        "am",
+                                                        "is",
+                                                        "are"
+                                                ]
+                                        ]
+                                },
+                                {
+                                        "text": "I [gap] ten years old and I live in Nysa.",
+                                        "answers": [
+                                                "am"
+                                        ],
+                                        "choices": [
+                                                [
+                                                        "am",
+                                                        "is",
+                                                        "are"
+                                                ]
+                                        ]
+                                },
+                                {
+                                        "text": "I have two hamsters. [gap] names are Bob and Lola.",
+                                        "answers": [
+                                                "Their"
+                                        ],
+                                        "choices": [
+                                                [
+                                                        "Their",
+                                                        "Our",
+                                                        "His"
+                                                ]
+                                        ]
+                                },
+                                {
+                                        "text": "They [gap] small and funny.",
+                                        "answers": [
+                                                "are"
+                                        ],
+                                        "choices": [
+                                                [
+                                                        "is",
+                                                        "are",
+                                                        "am"
+                                                ]
+                                        ]
+                                },
+                                {
+                                        "text": "[gap] cage is in my room, next to the sofa.",
+                                        "answers": [
+                                                "Their"
+                                        ],
+                                        "choices": [
+                                                [
+                                                        "Its",
+                                                        "Their",
+                                                        "Her"
+                                                ]
+                                        ]
+                                },
+                                {
+                                        "text": "My brother Kuba is twelve. [gap] favourite animal is a dog.",
+                                        "answers": [
+                                                "His"
+                                        ],
+                                        "choices": [
+                                                [
+                                                        "His",
+                                                        "Her",
+                                                        "My"
+                                                ]
+                                        ]
+                                },
+                                {
+                                        "text": "My mum [gap] good at handcraft.",
+                                        "answers": [
+                                                "is"
+                                        ],
+                                        "choices": [
+                                                [
+                                                        "am",
+                                                        "is",
+                                                        "are"
+                                                ]
+                                        ]
+                                },
+                                {
+                                        "text": "[gap] pumpkins for Halloween are beautiful!",
+                                        "answers": [
+                                                "Her"
+                                        ],
+                                        "choices": [
+                                                [
+                                                        "His",
+                                                        "Her",
+                                                        "Their"
+                                                ]
+                                        ]
+                                },
+                                {
+                                        "text": "We [gap] a happy family.",
+                                        "answers": [
+                                                "are"
+                                        ],
+                                        "choices": [
+                                                [
+                                                        "is",
+                                                        "am",
+                                                        "are"
+                                                ]
+                                        ]
+                                },
+                                {
+                                        "text": "And you? [gap] you good at decorating?",
+                                        "answers": [
+                                                "Are"
+                                        ],
+                                        "choices": [
+                                                [
+                                                        "Is",
+                                                        "Are",
+                                                        "Am"
+                                                ]
+                                        ]
+                                }
+                        ]
+                }
+        ],
         "distractors": [
                 {
                         "word": "dog",
@@ -3068,11 +3954,6 @@ video {
                 {
                         "word": "rabbit",
                         "translation": "królik",
-                        "pos": "n"
-                },
-                {
-                        "word": "hamster",
-                        "translation": "chomik",
                         "pos": "n"
                 },
                 {
@@ -3119,6 +4000,66 @@ video {
                         "word": "What is your favourite season?",
                         "translation": "Jaka jest twoja ulubiona pora roku?",
                         "pos": "sent"
+                },
+                {
+                        "word": "happy",
+                        "translation": "szczęśliwy",
+                        "pos": "adj"
+                },
+                {
+                        "word": "tall",
+                        "translation": "wysoki",
+                        "pos": "adj"
+                },
+                {
+                        "word": "fast",
+                        "translation": "szybki",
+                        "pos": "adj"
+                },
+                {
+                        "word": "funny",
+                        "translation": "zabawny",
+                        "pos": "adj"
+                },
+                {
+                        "word": "jump",
+                        "translation": "skakać",
+                        "pos": "v"
+                },
+                {
+                        "word": "swim",
+                        "translation": "pływać",
+                        "pos": "v"
+                },
+                {
+                        "word": "sing",
+                        "translation": "śpiewać",
+                        "pos": "v"
+                },
+                {
+                        "word": "read",
+                        "translation": "czytać",
+                        "pos": "v"
+                },
+                {
+                        "word": "his room",
+                        "translation": "jego pokój",
+                        "pos": "phr"
+                },
+                {
+                        "word": "her dog",
+                        "translation": "jej pies",
+                        "pos": "phr"
+                },
+                {
+                        "word": "our house",
+                        "translation": "nasz dom",
+                        "pos": "phr"
+                },
+                {
+                        "word": "my bag",
+                        "translation": "moja torba",
+                        "pos": "phr"
                 }
         ],
         "priorityVerbs": [],
@@ -3339,6 +4280,108 @@ video {
                         "lessons": [
                                 "Lekcja 1"
                         ]
+                },
+                {
+                        "word": "brain",
+                        "lessons": [
+                                "Lekcja 2"
+                        ]
+                },
+                {
+                        "word": "rot",
+                        "lessons": [
+                                "Lekcja 2"
+                        ]
+                },
+                {
+                        "word": "rotten",
+                        "lessons": [
+                                "Lekcja 2"
+                        ]
+                },
+                {
+                        "word": "lemon",
+                        "lessons": [
+                                "Lekcja 2"
+                        ]
+                },
+                {
+                        "word": "vegetables",
+                        "lessons": [
+                                "Lekcja 2"
+                        ]
+                },
+                {
+                        "word": "handcraft",
+                        "lessons": [
+                                "Lekcja 2"
+                        ]
+                },
+                {
+                        "word": "pumpkin",
+                        "lessons": [
+                                "Lekcja 2"
+                        ]
+                },
+                {
+                        "word": "Are you good at decorating?",
+                        "lessons": [
+                                "Lekcja 2"
+                        ]
+                },
+                {
+                        "word": "I'm good at handcraft",
+                        "lessons": [
+                                "Lekcja 2"
+                        ]
+                },
+                {
+                        "word": "How old are you?",
+                        "lessons": [
+                                "Lekcja 2"
+                        ]
+                },
+                {
+                        "word": "school bag",
+                        "lessons": [
+                                "Lekcja 2"
+                        ]
+                },
+                {
+                        "word": "table",
+                        "lessons": [
+                                "Lekcja 2"
+                        ]
+                },
+                {
+                        "word": "chair",
+                        "lessons": [
+                                "Lekcja 2"
+                        ]
+                },
+                {
+                        "word": "sofa",
+                        "lessons": [
+                                "Lekcja 2"
+                        ]
+                },
+                {
+                        "word": "cage",
+                        "lessons": [
+                                "Lekcja 2"
+                        ]
+                },
+                {
+                        "word": "their cage",
+                        "lessons": [
+                                "Lekcja 2"
+                        ]
+                },
+                {
+                        "word": "hamster",
+                        "lessons": [
+                                "Lekcja 2"
+                        ]
                 }
         ],
         "sentenceCount": 5,
@@ -3347,6 +4390,11 @@ video {
                         "lessonLabel": "Lekcja 1",
                         "dateLabel": "22.09.2026",
                         "text": "Cześć Marysiu! To Twój pierwszy Hub - znajdziesz tu słówka, gramatykę i wymowę z naszych lekcji.\n\nZacznij od rozejrzenia się po narzędziu. Najlepiej działa na komputerze, a odsłuchiwanie wymowy brzmi najlepiej w przeglądarce Google Chrome. To wersja beta, więc śmiało daj znać, jeśli coś nie zadziała.\n\nĆwicz nowe słówka i zwroty na fiszkach, jak również na teście. Naucz się dobrze odmiany czasownika \"być\" - to podstawa!\n\nPo każdej lekcji pojawia się nowy plik z dopisanym materiałem z tego miesiąca. Zawsze otwieraj ten najnowszy."
+                },
+                {
+                        "lessonLabel": "Lekcja 2",
+                        "dateLabel": "29.09.2026",
+                        "text": "Marysiu, po pierwsze zrób sobie ćwiczenia gramatyczne z zakładki Ćwiczenia: odmiana czasownika \"być\" (twierdzenia, przeczenia, pytania) i słówka my, your, his, her. Możesz odsłuchać piosenkę i przeczytać opis w Gramatyce.\n\nPotem poćwicz fiszki z obu lekcji i zrób test. Wybierz rodzaj zadania 1 i 3, ustaw liczbę pytań (12, może 24, ile Ci wygodnie), zaznacz lekcje i zrób test. Wynik wyślij mi na WhatsApp."
                 }
         ]
 };
@@ -5610,7 +6658,11 @@ video {
                 function itemHtml(it, itIdx) {
                     var parts = it.text.split('[gap]');
                     return parts.map(function (p, i) {
-                        return escapeHtml(p) + (i < parts.length - 1 ? gapHtml(it, itIdx, i) : '');
+                        // Nawias zaraz po luce to podpowiedz ("(rain)", "(✗ will rain)") -
+                        // wyszarzona, zeby nie mieszala sie z trescia zdania.
+                        var txt = escapeHtml(p);
+                        if (i > 0) txt = txt.replace(/^(\s*)(\([^)]*\))/, '$1<span class="hub-ex-hint">$2</span>');
+                        return txt + (i < parts.length - 1 ? gapHtml(it, itIdx, i) : '');
                     }).join('');
                 }
                 var body;
@@ -5653,16 +6705,18 @@ video {
                     ? '<div class="hub-ex-box">' + ex.wordBox.map(function (w) { return '<span>' + escapeHtml(w) + '</span>'; }).join('') + '</div>'
                     : '';
                 // Rozwiniete tylko pierwsze cwiczenie - cala lista naraz przytlacza.
-                return '<details class="hub-lesson-group"' + (exIdx === 0 ? ' open' : '') + '>' +
-                    '<summary class="hub-section-title' + (exIdx === 0 ? ' is-first' : '') + '">' + escapeHtml(ex.title || '') + '</summary>' +
-                    (ex.instructions ? '<p class="hub-msg-body" style="margin-bottom:12px">' + escapeHtml(ex.instructions) + '</p>' : '') +
+                var gapTotal = ex.items.reduce(function (s, it) { return s + (it.answers || []).length; }, 0);
+                return '<details class="hub-lesson-group hub-ex-card"' + (exIdx === 0 ? ' open' : '') + '>' +
+                    '<summary class="hub-ex-head"><span class="hub-ex-title">' + escapeHtml(ex.title || '') + '</span>' +
+                    (isSelf ? '' : '<span class="hub-ex-score" data-ex-score="' + exIdx + '" data-ex-total="' + gapTotal + '">&ndash; / ' + gapTotal + '</span>') +
+                    '</summary>' +
+                    (ex.instructions ? '<p class="hub-ex-instr">' + escapeHtml(ex.instructions) + '</p>' : '') +
                     wordBox + body +
                     (isSelf ? '' :
                     '<div class="hub-ex-actions">' +
-                    '<button type="button" class="hub-link-btn" data-ex-check="' + exIdx + '">Sprawd&#378;</button>' +
-                    '<button type="button" class="hub-link-btn" data-ex-show="' + exIdx + '">Poka&#380; odpowiedzi</button>' +
-                    '<button type="button" class="hub-link-btn" data-ex-reset="' + exIdx + '">Wyczy&#347;&#263;</button>' +
-                    '<span class="hub-ex-score" data-ex-score="' + exIdx + '"></span>' +
+                    '<button type="button" class="hub-ex-btn hub-ex-btn-main" data-ex-check="' + exIdx + '">Sprawd&#378;</button>' +
+                    '<button type="button" class="hub-ex-btn" data-ex-show="' + exIdx + '">Poka&#380; odpowiedzi</button>' +
+                    '<button type="button" class="hub-ex-btn" data-ex-reset="' + exIdx + '">Wyczy&#347;&#263;</button>' +
                     '</div>') + '</details>';
             }).join('');
 
@@ -5709,7 +6763,7 @@ video {
                 });
                 box.querySelector('[data-ex-score="' + exIdx + '"]').textContent = ok + ' / ' + gs.length;
             }
-            function setScoreEmpty(exIdx) { box.querySelector('[data-ex-score="' + exIdx + '"]').textContent = ''; }
+            function setScoreEmpty(exIdx) { var s = box.querySelector('[data-ex-score="' + exIdx + '"]'); s.textContent = '– / ' + s.getAttribute('data-ex-total'); }
 
             // Przywrocenie zapisanych odpowiedzi.
             EXERCISES.forEach(function (ex, exIdx) {
