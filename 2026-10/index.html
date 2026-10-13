@@ -5730,6 +5730,16 @@ video {
             var ch = ex.items[itIdx].choices;
             return !!(ch && ch[gap] && ch[gap].length);
         }
+        // Same luki do klikniecia (2026-10-13): kazda blokuje sie i ocenia od razu
+        // po kliknieciu, wiec przycisk "Sprawdz" nic by nie dodal i go nie ma.
+        function exAllChoice(ex) {
+            if (['sort', 'drag', 'transform', 'wordform', 'selfcheck'].indexOf(ex.layout) !== -1) return false;
+            var n = 0;
+            var all = ex.items.every(function (it, itIdx) {
+                return (it.answers || []).every(function (a, gi) { n++; return exIsChoice(ex, itIdx, gi); });
+            });
+            return all && n > 0;
+        }
         function exLetter(ex, i) { return ex.letters ? String.fromCharCode(65 + i) + ' ' : ''; }
         // layout "table": text pozycji to komorki rozdzielone "|"; przy svg
         // pierwsza kolumna jest obrazkiem, wiec komorki z lukami zaczynaja sie od 1.
@@ -5975,7 +5985,7 @@ video {
                     wordBox + body +
                     (isSelf || ex.layout === 'transform' ? '' :
                     '<div class="hub-ex-actions">' +
-                    '<button type="button" class="hub-ex-btn hub-ex-btn-main" data-ex-check="' + exIdx + '">Sprawd&#378;</button>' +
+                    (exAllChoice(ex) ? '' : '<button type="button" class="hub-ex-btn hub-ex-btn-main" data-ex-check="' + exIdx + '">Sprawd&#378;</button>') +
                     '<button type="button" class="hub-ex-btn" data-ex-reset="' + exIdx + '">&#8635; Resetuj</button>' +
                     (ex.layout === 'wordform' ? '<button type="button" class="hub-ex-btn" data-ex-reroll="' + exIdx + '">&#127922; Losuj ponownie</button>' : '') +
                     '</div>') + '</details>';
