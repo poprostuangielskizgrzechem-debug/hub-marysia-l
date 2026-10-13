@@ -2612,6 +2612,9 @@ video {
             .hub-ex-table .hub-ex-input { width: 100%; min-width: 90px; text-align: left; }
             .hub-ex-img { width: 1%; }
             .hub-ex-img svg { display: block; height: 40px; width: auto; max-width: 64px; box-shadow: 0 0 0 1px #cbd5e1; }
+            /* rysunek nad calym cwiczeniem (ex.svg), np. drzewo genealogiczne */
+            .hub-ex-figure { margin: 4px 0 14px; text-align: center; }
+            .hub-ex-figure svg { display: inline-block; width: 100%; max-width: 560px; height: auto; }
             .hub-ex-self { padding: 12px 0; border-top: 1px solid var(--hub-line); }
             .hub-ex-self:first-of-type { border-top: none; }
             .hub-ex-self-q { margin: 0 0 6px; line-height: 1.5; }
@@ -6724,6 +6727,16 @@ video {
             var ch = ex.items[itIdx].choices;
             return !!(ch && ch[gap] && ch[gap].length);
         }
+        // Same luki do klikniecia (2026-10-13): kazda blokuje sie i ocenia od razu
+        // po kliknieciu, wiec przycisk "Sprawdz" nic by nie dodal i go nie ma.
+        function exAllChoice(ex) {
+            if (['sort', 'drag', 'transform', 'wordform', 'selfcheck'].indexOf(ex.layout) !== -1) return false;
+            var n = 0;
+            var all = ex.items.every(function (it, itIdx) {
+                return (it.answers || []).every(function (a, gi) { n++; return exIsChoice(ex, itIdx, gi); });
+            });
+            return all && n > 0;
+        }
         function exLetter(ex, i) { return ex.letters ? String.fromCharCode(65 + i) + ' ' : ''; }
         // layout "table": text pozycji to komorki rozdzielone "|"; przy svg
         // pierwsza kolumna jest obrazkiem, wiec komorki z lukami zaczynaja sie od 1.
@@ -6965,10 +6978,11 @@ video {
                     (isSelf ? '' : '<span class="hub-ex-score" data-ex-score="' + exIdx + '" data-ex-total="' + gapTotal + '">&ndash; / ' + gapTotal + '</span>') +
                     '</summary>' +
                     (ex.instructions ? '<p class="hub-ex-instr">' + escapeHtml(ex.instructions) + '</p>' : '') +
+                    (ex.figure ? '<div class="hub-ex-figure">' + ex.figure + '</div>' : '') +
                     wordBox + body +
                     (isSelf || ex.layout === 'transform' ? '' :
                     '<div class="hub-ex-actions">' +
-                    '<button type="button" class="hub-ex-btn hub-ex-btn-main" data-ex-check="' + exIdx + '">Sprawd&#378;</button>' +
+                    (exAllChoice(ex) ? '' : '<button type="button" class="hub-ex-btn hub-ex-btn-main" data-ex-check="' + exIdx + '">Sprawd&#378;</button>') +
                     '<button type="button" class="hub-ex-btn" data-ex-reset="' + exIdx + '">&#8635; Resetuj</button>' +
                     (ex.layout === 'wordform' ? '<button type="button" class="hub-ex-btn" data-ex-reroll="' + exIdx + '">&#127922; Losuj ponownie</button>' : '') +
                     '</div>') + '</details>';
